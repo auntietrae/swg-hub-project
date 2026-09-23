@@ -1,17 +1,8 @@
-[build]
-
-This tells Netlify where to look for your backend functions
-
+build]
 functions = "netlify/functions"
-
-This tells Netlify where your frontend files (like index.html) are
-
 publish = "."
 
 [[redirects]]
-
-This seamlessly routes requests from your frontend to your new serverless backend
-
 from = "/api/*"
 to = "/.netlify/functions/swg_hub_production_backend_server/api/:splat"
 status = 200
