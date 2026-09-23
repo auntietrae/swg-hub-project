@@ -1,9 +1,17 @@
-build]
-functions = "netlify/functions"
-publish = "."
+[build]
+  # This tells Netlify where to look for your backend functions
+  functions = "netlify/functions"
+  # This tells Netlify where your frontend files (like index.html) are
+  publish = "."
+
+[functions]
+  # esbuild avoids a resolution bug in the legacy bundler with packages
+  # literally named "*.js" (e.g. ipaddr.js, a dependency of express)
+  node_bundler = "esbuild"
 
 [[redirects]]
-from = "/api/*"
-to = "/.netlify/functions/swg_hub_production_backend_server/api/:splat"
-status = 200
-force = true
+  # This seamlessly routes requests from your frontend to your new serverless backend
+  from = "/api/*"
+  to = "/.netlify/functions/swg_hub_production_backend_server/api/:splat"
+  status = 200
+  force = true
