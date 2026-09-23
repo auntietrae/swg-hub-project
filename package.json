@@ -1,0 +1,14 @@
+{
+"name": "swg-hub",
+"version": "1.0.0",
+"description": "Smart Waste & Gas Services Hub",
+"main": "index.html",
+"scripts": {},
+"dependencies": {
+"@supabase/supabase-js": "^2.39.0",
+"body-parser": "^1.20.2",
+"cors": "^2.8.5",
+"express": "^4.18.2",
+"serverless-http": "^3.2.0"
+}
+}
