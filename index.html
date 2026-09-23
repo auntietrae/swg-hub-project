@@ -32,8 +32,8 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass-nav {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
         .hero-bg {
@@ -41,76 +41,156 @@
             position: relative;
             overflow: hidden;
         }
+        .portal-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .portal-card:hover {
+            transform: translateY(-4px);
+        }
     </style>
 </head>
-<body class="text-slate-800 bg-slate-50 relative">
+<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col relative">
 
     <nav class="glass-nav fixed w-full top-0 z-40 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row justify-between items-center h-auto sm:h-20 py-4 sm:py-0 gap-4 sm:gap-0">
-                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="switchPortal('customer')">
-                    <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="showPortalGateway()">
+                    <svg width="38" height="38" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <defs>
-                            <linearGradient id="gasGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                            <linearGradient id="gasGrad" x1="0%" y1="100%" x2="0%" y2="0%">
                                 <stop offset="0%" stop-color="#1E40AF" />
                                 <stop offset="100%" stop-color="#3B82F6" />
                             </linearGradient>
-                            <linearGradient id="ecoGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                            <linearGradient id="ecoGrad" x1="0%" y1="100%" x2="100%" y2="0%">
                                 <stop offset="0%" stop-color="#059669" />
                                 <stop offset="100%" stop-color="#10B981" />
                             </linearGradient>
                         </defs>
-                        <path d="M50 15 C50 15 75 45 75 70 C75 83.8 63.8 95 50 95 C43.2 95 37 92.2 32.4 87.7 C42 85 48 78 48 68 C48 55 40 45 40 45 C45 38 50 25 50 15 Z" fill="url(#gasGradient)"/>
-                        <path d="M25 80 C15 70 15 50 25 40 C35 30 50 25 50 25 C50 25 42 35 42 48 C42 60 50 68 50 68 C45 75 35 85 25 80 Z" fill="url(#ecoGradient)" opacity="0.9"/>
+                        <path d="M50 15 C50 15 75 45 75 70 C75 83.8 63.8 95 50 95 C43.2 95 37 92.2 32.4 87.7 C42 85 48 78 48 68 C48 55 40 45 40 45 C45 38 50 25 50 15 Z" fill="url(#gasGrad)"/>
+                        <path d="M25 80 C15 70 15 50 25 40 C35 30 50 25 50 25 C50 25 42 35 42 48 C42 60 50 68 50 68 C45 75 35 85 25 80 Z" fill="url(#ecoGrad)" opacity="0.9"/>
                     </svg>
-                    <span class="text-2xl font-extrabold tracking-tight text-slate-900">SWG<span class="text-swg-blue">Hub</span></span>
+                    <div>
+                        <span class="text-2xl font-extrabold tracking-tight text-slate-900 block leading-none">SWG<span class="text-swg-blue">Hub</span></span>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Smart Waste & Gas</span>
+                    </div>
                 </div>
                 
-                <!-- Role-Based Portal Selector Tabs -->
-                <div class="flex flex-wrap justify-center items-center bg-slate-200 p-1.5 rounded-xl gap-1">
-                    <button id="navCustomerBtn" onclick="switchPortal('customer')" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition bg-white text-swg-blue shadow-sm">
-                        🏠 Home & Customer
+                <div class="flex items-center gap-2">
+                    <button id="changePortalBtn" onclick="showPortalGateway()" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+                        🔄 Switch Portal View
                     </button>
-                    <button id="navAgentBtn" onclick="switchPortal('agent')" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition text-slate-600 hover:text-slate-900">
-                        👷 Agent Portal
-                    </button>
-                    <button id="navAdminBtn" onclick="switchPortal('admin')" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition text-slate-600 hover:text-slate-900">
-                        🛡️ Admin Dashboard
-                    </button>
+                    <a href="tel:+237676508320" class="px-4 py-2 rounded-xl bg-blue-50 text-swg-blue text-xs font-bold hover:bg-blue-100 transition">
+                        📞 Hotline
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- ========================================== -->
-    <!-- PORTAL 1: CUSTOMER PORTAL & HOME VIEW -->
+    <!-- GATEWAY SELECTOR VIEW (Initial View on Visit) -->
     <!-- ========================================== -->
-    <div id="customerPortal" class="portal-view pt-28 sm:pt-20">
+    <div id="portalGatewayView" class="pt-28 pb-16 px-4 max-w-6xl mx-auto my-auto w-full">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <span class="inline-block py-1 px-4 rounded-full bg-blue-100 text-swg-blue text-xs font-bold tracking-wide mb-4 uppercase">
+                Welcome to SWG Hub Platform
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
+                Select your portal to continue
+            </h1>
+            <p class="text-slate-600 text-base sm:text-lg">
+                Choose the appropriate portal based on your user role. Agents and Administrators require secure authorization codes to access their dashboards.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Portal Card 1: General Portal -->
+            <div onclick="openGeneralPortal()" class="portal-card bg-white rounded-3xl p-8 border-2 border-slate-200 hover:border-swg-blue shadow-lg cursor-pointer flex flex-col justify-between relative group">
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-blue-100 text-swg-blue flex items-center justify-center text-2xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                        🏠
+                    </div>
+                    <span class="text-xs font-extrabold text-swg-blue uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">Public Portal</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-3 mb-2">General Portal</h2>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                        For households, businesses & prospective partners. Order waste pickup, request LPG refills, validate completed deliveries, submit complaints, or apply to become an agent.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-swg-blue font-bold text-sm">
+                    <span>Enter Portal</span>
+                    <span>→</span>
+                </div>
+            </div>
+
+            <!-- Portal Card 2: Agent Portal -->
+            <div onclick="promptAgentAccess()" class="portal-card bg-slate-900 text-white rounded-3xl p-8 border-2 border-slate-800 hover:border-emerald-500 shadow-xl cursor-pointer flex flex-col justify-between relative group">
+                <span class="absolute top-4 right-4 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Code Required</span>
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                        👷
+                    </div>
+                    <span class="text-xs font-extrabold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-3 py-1 rounded-full">Approved Partners</span>
+                    <h2 class="text-2xl font-bold text-white mt-3 mb-2">Registered Agent Portal</h2>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Exclusively for approved waste collectors & gas depots. Access via your unique Agent Code to view assigned routes, upload Proof of Delivery, and withdraw net earnings.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-between text-emerald-400 font-bold text-sm">
+                    <span>Unlock Dashboard</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Portal Card 3: Admin Portal -->
+            <div onclick="promptAdminAccess()" class="portal-card bg-white rounded-3xl p-8 border-2 border-slate-200 hover:border-red-500 shadow-lg cursor-pointer flex flex-col justify-between relative group">
+                <span class="absolute top-4 right-4 bg-red-100 text-red-600 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Superuser Code</span>
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-2xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                        🛡️
+                    </div>
+                    <span class="text-xs font-extrabold text-red-600 uppercase tracking-wider bg-red-50 px-3 py-1 rounded-full">Management</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-3 mb-2">Administrator Portal</h2>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                        For executive operations. Access via Admin Security Code to review agent applications, disburse wallet withdrawals, audit visited households, track orders, and manage client complaints.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-red-600 font-bold text-sm">
+                    <span>Admin Access</span>
+                    <span>🔑</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PORTAL 1: GENERAL PORTAL (Customers, Delivery Validation, Complaints, Apply) -->
+    <!-- ========================================== -->
+    <div id="customerPortal" class="portal-view hidden pt-20 pb-20">
         
         <!-- Hero Section -->
-        <section class="hero-bg py-20 md:py-28 px-4 sm:px-6 lg:px-8">
+        <section class="hero-bg py-16 md:py-24 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
             <div class="max-w-7xl mx-auto relative z-10">
                 <div class="text-center max-w-3xl mx-auto">
-                    <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-swg-blue text-sm font-bold tracking-wide mb-6">
+                    <span class="inline-block py-1.5 px-4 rounded-full bg-blue-100 text-swg-blue text-xs sm:text-sm font-bold tracking-wide mb-6">
                         🚀 Active in Molyko & Clerks Quarters, Buea | Hotline: +237 676508320
                     </span>
-                    <h1 class="text-4xl md:text-6xl font-extrabold text-swg-dark leading-tight mb-6">
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-swg-dark leading-tight mb-6">
                         Your trusted link for a <br class="hidden md:block"/>
                         <span class="text-swg-green">cleaner home</span> & a <span class="text-swg-blue">steady flame</span>.
                     </h1>
-                    <p class="text-lg text-slate-600 mb-10">
+                    <p class="text-base text-slate-600 mb-8">
                         Order cooking gas with cylinder photo matching or schedule waste pickup straight to your door. Passwordless & 100% platform-secured payments (Pre-pay or Pay on Arrival directly to SWG corporate merchant).
                     </p>
                     
                     <div class="bg-white p-6 rounded-2xl shadow-xl max-w-xl mx-auto border border-slate-100">
-                        <h3 class="text-left font-bold text-slate-800 mb-4">Enter phone number for instant service</h3>
+                        <h3 class="text-left font-bold text-slate-800 mb-4 text-sm sm:text-base">Enter phone number for instant service access</h3>
                         <form onsubmit="handleAuthSubmit(event)" class="flex flex-col sm:flex-row gap-3">
                             <div class="flex-1 relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">+237</span>
-                                <input type="tel" id="phoneInput" required placeholder="6XX XXX XXX" class="w-full pl-16 pr-4 py-3 rounded-xl border border-slate-200 focus:border-swg-blue outline-none font-medium">
+                                <input type="tel" id="phoneInput" required placeholder="6XX XXX XXX" class="w-full pl-16 pr-4 py-3 rounded-xl border border-slate-200 focus:border-swg-blue outline-none font-medium text-sm">
                             </div>
-                            <button type="submit" class="bg-swg-blue hover:bg-swg-blueDark text-white font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-blue-500/30">
-                                Verify & Order
+                            <button type="submit" class="bg-swg-blue hover:bg-swg-blueDark text-white font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-blue-500/30 text-sm">
+                                Verify Phone
                             </button>
                         </form>
                     </div>
@@ -118,78 +198,96 @@
             </div>
         </section>
 
-        <!-- Mission, Vision & How It Works Section -->
-        <section class="py-16 bg-white border-b border-slate-100">
+        <!-- RESTORED: Mission & Vision Section -->
+        <section class="py-14 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <span class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full uppercase tracking-wider">Who We Are</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Driven by Purpose & Sustainability</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Mission -->
-                    <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200">
-                        <span class="text-xs font-bold px-3 py-1 bg-blue-100 text-swg-blue rounded-full uppercase tracking-wider">Our Mission</span>
-                        <h3 class="text-2xl font-bold text-slate-900 mt-4 mb-3">Empowering Households & Communities</h3>
-                        <p class="text-slate-600 leading-relaxed">
-                            To provide a seamless, reliable digital platform that solves daily utility challenges in Buea, ensuring a cleaner environment and safe gas delivery while empowering local service providers.
+                    <div class="bg-gradient-to-br from-blue-50/60 to-white p-8 rounded-3xl border border-blue-100 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-swg-blue flex items-center justify-center text-2xl font-bold">🎯</div>
+                            <div>
+                                <span class="text-xs font-bold text-swg-blue uppercase tracking-wider">Core Purpose</span>
+                                <h3 class="text-xl font-extrabold text-slate-900">Our Mission</h3>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            To provide a seamless, reliable digital platform that solves daily utility challenges in Buea, ensuring a cleaner environment and safe gas delivery while empowering local service providers with steady, dignified income opportunities.
                         </p>
                     </div>
                     <!-- Vision -->
-                    <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200">
-                        <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-swg-green rounded-full uppercase tracking-wider">Our Vision</span>
-                        <h3 class="text-2xl font-bold text-slate-900 mt-4 mb-3">Leading Utility Infrastructure</h3>
-                        <p class="text-slate-600 leading-relaxed">
-                            To become the leading digital infrastructure for household utility management across Cameroon, transforming daily chores into opportunities for community growth and environmental sustainability.
+                    <div class="bg-gradient-to-br from-emerald-50/60 to-white p-8 rounded-3xl border border-emerald-100 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-swg-green flex items-center justify-center text-2xl font-bold">🌍</div>
+                            <div>
+                                <span class="text-xs font-bold text-swg-green uppercase tracking-wider">Future Horizon</span>
+                                <h3 class="text-xl font-extrabold text-slate-900">Our Vision</h3>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            To become the leading digital infrastructure for household utility management across Cameroon, transforming daily chores into opportunities for community health, environmental sustainability, and local economic growth.
                         </p>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- How It Works -->
+        <!-- How It Works Section -->
+        <section class="py-16 bg-slate-50 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-swg-dark mb-3">How SWG Hub Works</h2>
-                    <p class="text-slate-600">A passwordless system with 100% platform-secured payments (pre-pay or pay on arrival directly to corporate merchant code).</p>
+                    <span class="text-xs font-bold px-3 py-1 bg-slate-200 text-slate-700 rounded-full uppercase tracking-wider">Simple Process</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-2">How SWG Hub Works</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="text-center p-6 bg-slate-50 rounded-2xl border">
+                    <div class="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
                         <div class="w-12 h-12 bg-blue-100 text-swg-blue font-black rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">1</div>
-                        <h4 class="font-bold text-lg mb-2">Verify Phone Number</h4>
-                        <p class="text-slate-500 text-sm">Enter your phone number and input the 4-digit SMS OTP code. No passwords to remember.</p>
+                        <h4 class="font-bold text-lg mb-2 text-slate-900">Verify Phone Number</h4>
+                        <p class="text-slate-500 text-sm">Enter your phone number to receive an instant verification SMS without tedious passwords.</p>
                     </div>
-                    <div class="text-center p-6 bg-slate-50 rounded-2xl border">
+                    <div class="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
                         <div class="w-12 h-12 bg-emerald-100 text-swg-green font-black rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">2</div>
-                        <h4 class="font-bold text-lg mb-2">Select Service & Payment Option</h4>
+                        <h4 class="font-bold text-lg mb-2 text-slate-900">Select Service & Payment Mode</h4>
                         <p class="text-slate-500 text-sm">Choose waste subscription or gas photo matching, and select online pre-pay or pay-on-arrival via corporate merchant code.</p>
                     </div>
-                    <div class="text-center p-6 bg-slate-50 rounded-2xl border">
+                    <div class="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
                         <div class="w-12 h-12 bg-amber-100 text-amber-600 font-black rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">3</div>
-                        <h4 class="font-bold text-lg mb-2">Doorstep Delivery & Verification</h4>
-                        <p class="text-slate-500 text-sm">Agent delivers and verifies service. All payments route strictly through SWG Hub platform accounts (never paid directly to agents).</p>
+                        <h4 class="font-bold text-lg mb-2 text-slate-900">Delivery & Confirmation</h4>
+                        <p class="text-slate-500 text-sm">Agent fulfills service at your door. Confirm receipt on the portal to release payment from platform escrow.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Services Section -->
-        <section id="services" class="py-20 bg-slate-50">
+        <section id="services" class="py-20 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-extrabold text-swg-dark mb-4">Customer Service Selector</h2>
-                    <p class="text-slate-600">Select your utility need below.</p>
+                    <p class="text-slate-600">Select your household utility requirement below.</p>
                 </div>
 
                 <div class="flex justify-center mb-12">
-                    <div class="bg-slate-200 p-1 rounded-xl inline-flex flex-col sm:flex-row gap-2 sm:gap-0 w-full sm:w-auto">
-                        <button id="btnWaste" onclick="toggleService('waste')" class="w-full sm:w-44 py-3 rounded-lg font-bold transition text-white bg-swg-green shadow-md">♻️ Waste Pickup</button>
-                        <button id="btnGas" onclick="toggleService('gas')" class="w-full sm:w-44 py-3 rounded-lg font-bold transition text-slate-600">🔥 Cooking Gas</button>
+                    <div class="bg-slate-200 p-1.5 rounded-2xl inline-flex flex-col sm:flex-row gap-2 sm:gap-0 w-full sm:w-auto">
+                        <button id="btnWaste" onclick="toggleService('waste')" class="w-full sm:w-48 py-3 rounded-xl font-bold transition text-white bg-swg-green shadow-md">♻️ Waste Pickup</button>
+                        <button id="btnGas" onclick="toggleService('gas')" class="w-full sm:w-48 py-3 rounded-xl font-bold transition text-slate-600">🔥 Cooking Gas</button>
                     </div>
                 </div>
 
                 <!-- Waste Tiers -->
                 <div id="wasteSection" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="border rounded-2xl p-6 bg-white flex flex-col shadow-sm">
+                    <div class="border border-slate-200 rounded-2xl p-6 bg-white flex flex-col shadow-sm hover:shadow-md transition">
                         <span class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-700 rounded-full w-max mb-4">Pay-As-You-Go</span>
                         <h3 class="text-xl font-bold mb-2">One-Time</h3>
-                        <p class="text-slate-500 text-sm mb-6 flex-grow">Immediate single pickup.</p>
+                        <p class="text-slate-500 text-sm mb-6 flex-grow">Immediate single pickup response.</p>
                         <div class="mb-6"><span class="text-2xl font-black">1,500</span> <span class="text-xs text-slate-500">FCFA</span></div>
                         <button onclick="openOrderModal('One-Time Waste', '1,500 FCFA')" class="w-full py-3 border-2 border-swg-green text-swg-green font-bold rounded-xl hover:bg-swg-green hover:text-white transition">Select Plan</button>
                     </div>
-                    <div class="border rounded-2xl p-6 bg-white flex flex-col shadow-sm">
+                    <div class="border border-slate-200 rounded-2xl p-6 bg-white flex flex-col shadow-sm hover:shadow-md transition">
                         <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-swg-green rounded-full w-max mb-4">Student Favorite</span>
                         <h3 class="text-xl font-bold mb-2">Twice Weekly</h3>
                         <p class="text-slate-500 text-sm mb-6 flex-grow">Pickups two days a week.</p>
@@ -197,14 +295,14 @@
                         <button onclick="openOrderModal('Twice Weekly Waste', '5,000 FCFA / mo')" class="w-full py-3 border-2 border-swg-green text-swg-green font-bold rounded-xl hover:bg-swg-green hover:text-white transition">Select Plan</button>
                     </div>
                     <div class="border-2 border-swg-green rounded-2xl p-6 bg-white shadow-xl flex flex-col relative">
-                        <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-swg-green text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap">BEST VALUE</span>
+                        <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-swg-green text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap uppercase">BEST VALUE</span>
                         <h3 class="text-xl font-bold mb-2 mt-2">Monthly</h3>
-                        <p class="text-slate-500 text-sm mb-6 flex-grow">Fixed collections per month.</p>
+                        <p class="text-slate-500 text-sm mb-6 flex-grow">Fixed regular collections per month.</p>
                         <div class="mb-6"><span class="text-2xl font-black">8,500</span> <span class="text-xs text-slate-500">FCFA / mo</span></div>
                         <button onclick="openOrderModal('Monthly Waste', '8,500 FCFA / mo')" class="w-full py-3 bg-swg-green text-white font-bold rounded-xl hover:bg-swg-greenDark transition shadow-lg shadow-green-500/20">Select Plan</button>
                     </div>
-                    <div class="border rounded-2xl p-6 bg-white flex flex-col shadow-sm">
-                        <span class="text-xs font-bold px-3 py-1 bg-blue-100 text-swg-blue rounded-full w-max mb-4">Landlords & Business</span>
+                    <div class="border border-slate-200 rounded-2xl p-6 bg-white flex flex-col shadow-sm hover:shadow-md transition">
+                        <span class="text-xs font-bold px-3 py-1 bg-blue-100 text-swg-blue rounded-full w-max mb-4">Landlords & Commercial</span>
                         <h3 class="text-xl font-bold mb-2">Yearly Plan</h3>
                         <p class="text-slate-500 text-sm mb-6 flex-grow">Year-round hygiene package.</p>
                         <div class="mb-6"><span class="text-2xl font-black">90,000</span> <span class="text-xs text-slate-500">FCFA / yr</span></div>
@@ -213,80 +311,181 @@
                 </div>
 
                 <!-- Gas Ordering Banner -->
-                <div id="gasSection" class="hidden max-w-4xl mx-auto bg-slate-900 text-white rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl">
+                <div id="gasSection" class="hidden max-w-4xl mx-auto bg-slate-900 text-white rounded-3xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-8 shadow-xl">
                     <div class="flex-1 text-center md:text-left">
-                        <h3 class="text-2xl md:text-3xl font-bold mb-4">Doorstep Gas Refill & Photo Match</h3>
-                        <p class="text-slate-300 mb-6 text-sm md:text-base">Standard 12.5kg Cylinder Refill priced at <strong>8,000 FCFA</strong> (modifiable by company) + 500 FCFA delivery. Upload a photo of your current cylinder so our supplier brings the exact brand, size, and color for your exchange.</p>
-                        <button onclick="openGasModal()" class="w-full md:w-auto py-3 px-8 bg-swg-blue text-white font-bold rounded-xl hover:bg-blue-600 transition shadow-lg">Order Gas with Photo Upload</button>
+                        <span class="bg-blue-500/20 text-blue-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Smart Photo Matching</span>
+                        <h3 class="text-2xl md:text-3xl font-bold mb-3">Doorstep Gas Refill & Photo Match</h3>
+                        <p class="text-slate-300 mb-6 text-sm md:text-base leading-relaxed">
+                            Standard 12.5kg Cylinder Refill priced at <strong>8,000 FCFA</strong> + 500 FCFA delivery. Simply snap a photo of your current cylinder so our supplier brings the exact brand, size, and valve head for your exchange.
+                        </p>
+                        <button onclick="openGasModal()" class="w-full md:w-auto py-3.5 px-8 bg-swg-blue text-white font-bold rounded-xl hover:bg-blue-600 transition shadow-lg shadow-blue-500/30">
+                            Order Gas with Photo Upload
+                        </button>
                     </div>
-                    <div class="w-32 h-44 md:w-40 md:h-52 bg-gradient-to-b from-blue-400 to-swg-blue rounded-t-full rounded-b-xl relative shadow-2xl flex items-center justify-center text-white font-bold flex-shrink-0">12.5kg LPG</div>
+                    <div class="w-32 h-44 md:w-40 md:h-52 bg-gradient-to-b from-blue-400 to-swg-blue rounded-t-full rounded-b-xl relative shadow-2xl flex items-center justify-center text-white font-bold flex-shrink-0 border-4 border-blue-300/30">
+                        12.5kg LPG
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Delivery Validation & Payment Confirmation Section -->
+        <section class="py-16 bg-slate-50 border-b border-slate-200">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-lg">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xl">✅</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Delivery Validation & Pay-on-Arrival Clearance</h3>
+                            <p class="text-slate-500 text-xs sm:text-sm">Confirm service receipt or complete pay-on-arrival merchant verification.</p>
+                        </div>
+                    </div>
+                    <form onsubmit="handleDeliveryValidation(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Order / Phone Number</label>
+                                <input type="text" id="valPhone" required placeholder="Enter registered phone number" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-swg-blue">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Service Delivered</label>
+                                <select id="valService" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white focus:border-swg-blue">
+                                    <option value="waste">Waste Pickup Completed</option>
+                                    <option value="gas">Gas Refill Delivered</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Payment Status</label>
+                            <select id="valPaymentStatus" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white focus:border-swg-blue">
+                                <option value="prepaid">Pre-paid Online (Escrow Release)</option>
+                                <option value="on_arrival">Pay-on-Arrival Cleared via Corporate MoMo (+237 676508320)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition text-sm">
+                            Validate & Confirm Service Receipt
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Become an Agent / Partner Application CTA Section -->
+        <section class="py-16 bg-gradient-to-r from-swg-blue to-blue-900 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="max-w-2xl">
+                    <span class="bg-white/20 text-blue-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Partner Opportunities</span>
+                    <h2 class="text-3xl font-extrabold mb-3">Apply to Become an Approved SWG Agent</h2>
+                    <p class="text-blue-100 text-sm sm:text-base leading-relaxed">
+                        Are you an independent waste collector with a tricycle or an authorized LPG gas supplier in Buea? Join SWG Hub to receive guaranteed household routes and weekly mobile money payouts.
+                    </p>
+                </div>
+                <button onclick="openModal('enrollmentModal')" class="bg-white text-swg-blue font-extrabold py-4 px-8 rounded-2xl hover:bg-slate-100 transition shadow-xl whitespace-nowrap text-sm sm:text-base">
+                    📝 Submit Agent Application
+                </button>
+            </div>
+        </section>
+
+        <!-- Customer Complaints Section -->
+        <section class="py-16 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl">📢</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Client Service Complaints & Feedback</h3>
+                            <p class="text-slate-500 text-xs sm:text-sm">Encountered an issue? Submit your report directly to SWG Hub administrators.</p>
+                        </div>
+                    </div>
+                    <form onsubmit="handleComplaintSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Your Name</label>
+                                <input type="text" required placeholder="Full Name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-swg-blue bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                                <input type="tel" required placeholder="6XX XXX XXX" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-swg-blue bg-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Complaint Category</label>
+                            <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white focus:border-swg-blue">
+                                <option>Delayed Waste Pickup</option>
+                                <option>Incorrect Gas Cylinder Brand/Match</option>
+                                <option>Agent Conduct / Unofficial Cash Request</option>
+                                <option>Other Inquiry</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Details / Description</label>
+                            <textarea required rows="3" placeholder="Explain what happened..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-swg-blue bg-white"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition text-sm">
+                            Submit Complaint to Admin Desk
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>
     </div>
 
     <!-- ========================================== -->
-    <!-- PORTAL 2: AGENT PORTAL (Registration & Wallet) -->
+    <!-- PORTAL 2: REGISTERED AGENT PORTAL (Gated) -->
     <!-- ========================================== -->
-    <div id="agentPortal" class="portal-view hidden pt-28 sm:pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        
-        <!-- NEW: Agent Enrollment CTA Banner -->
-        <div class="bg-gradient-to-r from-swg-blue to-blue-800 text-white rounded-3xl p-8 mb-8 flex flex-col md:flex-row justify-between items-center shadow-xl border border-blue-400/30">
-            <div class="mb-6 md:mb-0 text-center md:text-left">
-                <span class="bg-white/20 text-blue-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Partner With Us</span>
-                <h3 class="text-2xl md:text-3xl font-extrabold mb-2">Join as a Collector or Gas Supplier</h3>
-                <p class="text-blue-100 max-w-lg text-sm md:text-base">Whether you are an independent waste collector with a tricycle or an authorized local gas depot, join SWG Hub to expand your reach and get paid securely via MoMo.</p>
-            </div>
-            <button onclick="openModal('enrollmentModal')" class="w-full md:w-auto bg-white text-swg-blue font-extrabold py-3 px-8 rounded-xl hover:bg-slate-50 transition shadow-lg whitespace-nowrap">
-                Register as Provider
-            </button>
-        </div>
-
-        <!-- Existing Active Agent Dashboard -->
+    <div id="agentPortal" class="portal-view hidden pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <div class="bg-slate-900 text-white rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-slate-700 pb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-slate-800 pb-8">
                 <div>
-                    <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Restricted Provider View</span>
-                    <h2 class="text-2xl md:text-3xl font-extrabold mt-3">John D. (Collector #04 - Molyko)</h2>
-                    <p class="text-slate-400 text-sm mt-2">🟢 Online & Ready for Assigned Routes (Zero Cash Handling Policy)</p>
+                    <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Approved Agent Workspace</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold mt-3">John D. (Collector #04 - Molyko Zone)</h2>
+                    <p class="text-slate-400 text-sm mt-2">🟢 Active Status | Unique Code: <span class="font-mono text-emerald-400 font-bold">AGENT123</span></p>
                 </div>
                 <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 w-full md:w-auto text-center md:text-right">
-                    <p class="text-xs text-slate-400 mb-1">Available Wallet Balance</p>
+                    <p class="text-xs text-slate-400 mb-1">Available Escrow Wallet</p>
                     <p class="text-3xl md:text-4xl font-black text-emerald-400" id="agentBalanceDisplay">14,500 <span class="text-sm font-normal text-white">FCFA</span></p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Withdrawal Card -->
                 <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex flex-col justify-between">
                     <div>
-                        <h3 class="font-bold text-lg mb-2 text-emerald-400">💸 Flexible Withdrawal Request</h3>
-                        <p class="text-slate-300 text-sm mb-6">Request payout of your net earnings directly to your Mobile Money or Orange Money account number and name.</p>
+                        <h3 class="font-bold text-lg mb-2 text-emerald-400">💸 Flexible Wallet Withdrawal</h3>
+                        <p class="text-slate-300 text-sm mb-6">Request instant payout of accumulated service fees straight to your Mobile Money account.</p>
                     </div>
-                    <button onclick="openWithdrawModal()" class="w-full bg-swg-green hover:bg-swg-greenDark text-white font-bold py-3 rounded-xl transition shadow-lg">
+                    <button onclick="openWithdrawModal()" class="w-full bg-swg-green hover:bg-swg-greenDark text-white font-bold py-3.5 rounded-xl transition shadow-lg">
                         Withdraw 14,500 FCFA Now
                     </button>
                 </div>
 
+                <!-- Proof of Delivery Card -->
                 <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
                     <h3 class="font-bold text-lg mb-2 text-blue-400">📷 Proof of Delivery (PoD) Capture</h3>
-                    <p class="text-slate-300 text-sm mb-6">Upload completion photo and customer signature if customer device is lost.</p>
-                    <div class="border-2 border-dashed border-slate-600 rounded-xl p-6 text-center cursor-pointer hover:bg-slate-700/55 transition h-24 flex items-center justify-center" onclick="document.getElementById('podInput').click()">
-                        <p class="text-sm font-bold text-slate-200" id="podStatusText">📸 Click to upload live job photo</p>
+                    <p class="text-slate-300 text-sm mb-4">Snap live job photo to prove pickup or gas cylinder swap.</p>
+                    <div class="border-2 border-dashed border-slate-600 rounded-xl p-6 text-center cursor-pointer hover:bg-slate-700/50 transition flex items-center justify-center" onclick="document.getElementById('podInput').click()">
+                        <p class="text-sm font-bold text-slate-200" id="podStatusText">📸 Tap to upload live completion photo</p>
                         <input type="file" id="podInput" accept="image/*" class="hidden" onchange="handlePodUpload(event)">
                     </div>
                 </div>
             </div>
 
+            <!-- Ledger Card -->
             <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                <h3 class="font-bold text-lg mb-4 text-white">Live Earnings Ledger (Platform-Cleared)</h3>
+                <h3 class="font-bold text-lg mb-4 text-white">Live Route Clearance Ledger</h3>
                 <div class="space-y-4 text-sm">
                     <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                        <span class="text-slate-300">Molyko Hostel Block C — Waste Collection</span>
-                        <span class="text-emerald-400 font-bold bg-emerald-400/10 px-2 py-1 rounded">+1,275 FCFA (Net)</span>
+                        <div>
+                            <p class="text-slate-200 font-semibold">Molyko Hostel Block C — Waste Collection</p>
+                            <p class="text-xs text-slate-400">Validated by client • Pre-paid Escrow</p>
+                        </div>
+                        <span class="text-emerald-400 font-bold bg-emerald-400/10 px-3 py-1 rounded-lg">+1,275 FCFA</span>
                     </div>
                     <div class="flex justify-between items-center pb-1">
-                        <span class="text-slate-300">Clerks Quarters Refill — Gas Delivery</span>
-                        <span class="text-emerald-400 font-bold bg-emerald-400/10 px-2 py-1 rounded">+2,500 FCFA (Net)</span>
+                        <div>
+                            <p class="text-slate-200 font-semibold">Clerks Quarters Refill — LPG Gas Delivery</p>
+                            <p class="text-xs text-slate-400">Validated by client • Pay on arrival merchant</p>
+                        </div>
+                        <span class="text-emerald-400 font-bold bg-emerald-400/10 px-3 py-1 rounded-lg">+2,500 FCFA</span>
                     </div>
                 </div>
             </div>
@@ -294,172 +493,255 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- PORTAL 3: ADMIN DASHBOARD (Superuser) -->
+    <!-- PORTAL 3: ADMINISTRATOR PORTAL (Gated) -->
     <!-- ========================================== -->
-    <div id="adminPortal" class="portal-view hidden pt-28 sm:pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div id="adminPortal" class="portal-view hidden pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <div class="bg-white rounded-3xl p-6 md:p-12 shadow-xl border border-slate-200">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-6 border-b gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-6 border-b border-slate-200 gap-4">
                 <div>
-                    <span class="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Superuser Control</span>
+                    <span class="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Superuser Control Center</span>
                     <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">SWG Hub Operations Dashboard</h2>
-                    <p class="text-slate-500 text-sm mt-1">Auditing transactions, managing pricing, and clearing agents.</p>
+                    <p class="text-slate-500 text-sm mt-1">Full control over business metrics, agent applications, complaints, orders, and withdrawals.</p>
                 </div>
-                <div class="text-left md:text-right bg-slate-50 p-4 rounded-xl border">
+                <div class="text-left md:text-right bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <p class="text-xs text-slate-500 font-semibold mb-1">Corporate MoMo Merchant</p>
-                    <p class="text-lg font-bold text-swg-blue">+237 676508320</p>
+                    <p class="text-lg font-mono font-bold text-swg-blue">+237 676508320</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-slate-50 p-6 rounded-2xl border hover:shadow-md transition">
-                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wide">Platform Revenue (MoMo)</p>
-                    <p class="text-3xl font-black text-slate-800 mt-2">452,800 <span class="text-xs font-normal">FCFA</span></p>
+            <!-- Dashboard Metric Counters -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Platform Revenue</p>
+                    <p class="text-2xl font-black text-slate-800 mt-1">452,800 <span class="text-[10px] font-normal">FCFA</span></p>
                 </div>
-                <div class="bg-slate-50 p-6 rounded-2xl border hover:shadow-md transition">
-                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wide">Active Subscriptions</p>
-                    <p class="text-3xl font-black text-swg-green mt-2">128 H-holds</p>
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Households Visited</p>
+                    <p class="text-2xl font-black text-swg-blue mt-1">1,240</p>
                 </div>
-                <div class="bg-slate-50 p-6 rounded-2xl border hover:shadow-md transition">
-                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wide">Withdrawal Queue</p>
-                    <p class="text-3xl font-black text-amber-500 mt-2" id="pendingQueueCount">1 Request</p>
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Active Subscriptions</p>
+                    <p class="text-2xl font-black text-swg-green mt-1">128</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Withdrawal Queue</p>
+                    <p class="text-2xl font-black text-amber-500 mt-1" id="pendingQueueCount">1 Pending</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 col-span-2 md:col-span-1">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Open Complaints</p>
+                    <p class="text-2xl font-black text-red-500 mt-1" id="adminComplaintCount">1 Open</p>
                 </div>
             </div>
 
+            <!-- Operations Queues -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Pending Agent Withdrawal Queue -->
-                <div class="bg-slate-50 p-6 rounded-2xl border h-full">
-                    <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-amber-500"></span> Withdrawal Requests
-                    </h3>
-                    <div id="withdrawalQueueContainer" class="space-y-4">
-                        <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-between gap-4">
-                            <div>
-                                <p class="font-bold text-slate-800">John Ndikum (Agent #04)</p>
-                                <p class="text-xs text-slate-600 mt-2">MoMo: <span class="font-mono font-bold text-slate-800">676508320</span></p>
-                                <p class="text-xs text-slate-600 mt-1">Amount: <span class="font-bold text-swg-green">14,500 FCFA</span></p>
+                
+                <!-- Agent Application Queue -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Agent Applications Queue
+                        </h3>
+                        <div id="applicationQueueContainer" class="space-y-4">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between gap-3" id="mockApp1">
+                                <div>
+                                    <div class="flex justify-between items-start">
+                                        <p class="font-bold text-slate-800">Sarah Ebot</p>
+                                        <span class="text-[10px] bg-blue-100 text-swg-blue px-2 py-0.5 rounded font-bold">Waste Collector</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600 mt-2">Vehicle: <span class="font-semibold text-slate-800">Tricycle (Kekeh)</span></p>
+                                    <p class="text-xs text-slate-600 mt-1">Zone: <span class="font-semibold text-slate-800">Clerks Quarters</span></p>
+                                    <p class="text-xs text-slate-600 mt-1">Phone: <span class="font-mono text-slate-800">671234567</span></p>
+                                </div>
+                                <button onclick="approveAgent(this, 'mockApp1')" class="w-full bg-swg-blue hover:bg-swg-blueDark text-white text-xs font-bold py-2.5 rounded-lg transition shadow">
+                                    Approve & Assign Agent Code
+                                </button>
                             </div>
-                            <button onclick="clearAdminWithdrawal(this)" class="w-full bg-swg-green hover:bg-swg-greenDark text-white text-sm font-bold py-2.5 rounded-lg transition shadow">
-                                Confirm MoMo Transfer
+                            <p id="emptyAppsText" class="text-xs text-slate-400 text-center py-4 hidden">No pending applications in queue.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agent Withdrawal Requests Queue -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Agent Withdrawal Requests
+                        </h3>
+                        <div id="withdrawalQueueContainer" class="space-y-4">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+                                <div>
+                                    <p class="font-bold text-slate-800">John Ndikum (Agent #04)</p>
+                                    <p class="text-xs text-slate-600 mt-1">MoMo: <span class="font-mono font-bold text-slate-800">676508320</span></p>
+                                    <p class="text-xs text-slate-600 mt-1">Amount: <span class="font-bold text-swg-green">14,500 FCFA</span></p>
+                                </div>
+                                <button onclick="clearAdminWithdrawal(this)" class="w-full bg-swg-green hover:bg-swg-greenDark text-white text-xs font-bold py-2.5 rounded-lg transition shadow">
+                                    Disburse & Clear Escrow
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Customer Orders Registry -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 lg:col-span-2">
+                    <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Active Orders & Route Assignments
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-600">
+                            <thead class="bg-slate-200/60 text-slate-700 font-bold uppercase tracking-wider">
+                                <tr>
+                                    <th class="p-3 rounded-l-lg">Customer Phone</th>
+                                    <th class="p-3">Service Required</th>
+                                    <th class="p-3">Location</th>
+                                    <th class="p-3">Payment</th>
+                                    <th class="p-3 rounded-r-lg">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-800">677890123</td>
+                                    <td class="p-3">Monthly Waste Plan</td>
+                                    <td class="p-3">Molyko, Block B</td>
+                                    <td class="p-3"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">Pre-paid</span></td>
+                                    <td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold">Assigned (#04)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-800">674321987</td>
+                                    <td class="p-3">Camgas 12.5kg Refill</td>
+                                    <td class="p-3">Clerks Quarters</td>
+                                    <td class="p-3"><span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-bold">Pay on Arrival</span></td>
+                                    <td class="p-3"><span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-bold">In Transit</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Client Complaints Queue -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 lg:col-span-2">
+                    <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Received Client Complaints
+                    </h3>
+                    <div id="adminComplaintsList" class="space-y-3">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">Emmanuel T. (+237 675112233)</p>
+                                <p class="text-xs text-red-600 font-semibold mt-0.5">Category: Delayed Waste Pickup</p>
+                                <p class="text-xs text-slate-500 mt-1">"Pickup was scheduled for Tuesday morning in Molyko but agent hasn't arrived yet."</p>
+                            </div>
+                            <button onclick="resolveComplaint(this)" class="bg-slate-800 text-white hover:bg-slate-900 text-xs font-bold py-2 px-4 rounded-lg transition whitespace-nowrap">
+                                Mark Resolved
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- NEW: Pending Agent Applications Queue -->
-                <div class="bg-slate-50 p-6 rounded-2xl border h-full">
-                    <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-500"></span> Agent Applications
-                    </h3>
-                    <div id="applicationQueueContainer" class="space-y-4">
-                        <!-- Mock Pending Application -->
-                        <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-between gap-4" id="mockApp1">
-                            <div>
-                                <div class="flex justify-between items-start">
-                                    <p class="font-bold text-slate-800">Sarah Ebot</p>
-                                    <span class="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold">NEW</span>
-                                </div>
-                                <p class="text-xs text-slate-600 mt-2">Vehicle: <span class="font-semibold text-slate-800">Tricycle (Kekeh)</span></p>
-                                <p class="text-xs text-slate-600 mt-1">Zone: <span class="font-semibold text-slate-800">Clerks Quarters</span></p>
-                                <p class="text-xs text-slate-600 mt-1">Phone: <span class="font-mono text-slate-800">671234567</span></p>
-                            </div>
-                            <button onclick="approveAgent(this, 'mockApp1')" class="w-full bg-swg-blue hover:bg-swg-blueDark text-white text-sm font-bold py-2.5 rounded-lg transition shadow">
-                                Review & Approve Agent
-                            </button>
-                        </div>
-                        <!-- Placeholder when empty -->
-                        <p id="emptyAppsText" class="text-sm text-slate-500 text-center py-4 hidden">No pending applications at the moment.</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- MODALS -->
+    <!-- MODAL DIALOGS -->
     <!-- ========================================== -->
 
-    <!-- NEW: Agent Enrollment Form Modal -->
+    <!-- Agent Access Code Modal -->
+    <div id="agentAuthModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" onclick="closeModal('agentAuthModal')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full relative z-10 text-center">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">🔒</div>
+            <h3 class="text-2xl font-extrabold text-slate-900 mb-1">Agent Security Code</h3>
+            <p class="text-slate-500 text-xs mb-6">Enter your unique authorization code given upon approval (Default test: <strong class="text-slate-800 font-mono">AGENT123</strong>)</p>
+            <form onsubmit="verifyAgentCode(event)" class="space-y-4">
+                <input type="password" id="agentCodeInput" required placeholder="Enter Agent Code" class="w-full px-4 py-3 text-center text-lg tracking-widest font-mono font-bold rounded-xl border-2 border-slate-200 focus:border-emerald-500 outline-none">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg">Access Agent Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Access Code Modal -->
+    <div id="adminAuthModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" onclick="closeModal('adminAuthModal')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full relative z-10 text-center">
+            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">🔑</div>
+            <h3 class="text-2xl font-extrabold text-slate-900 mb-1">Admin Security Code</h3>
+            <p class="text-slate-500 text-xs mb-6">Enter superuser access password (Default test: <strong class="text-slate-800 font-mono">ADMIN999</strong>)</p>
+            <form onsubmit="verifyAdminCode(event)" class="space-y-4">
+                <input type="password" id="adminCodeInput" required placeholder="Enter Admin Code" class="w-full px-4 py-3 text-center text-lg tracking-widest font-mono font-bold rounded-xl border-2 border-slate-200 focus:border-red-500 outline-none">
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-lg">Access Admin Portal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Agent Application Modal -->
     <div id="enrollmentModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4">
         <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" onclick="closeModal('enrollmentModal')"></div>
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-lg w-full relative z-10 overflow-y-auto max-h-[95vh]">
             <button onclick="closeModal('enrollmentModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition">✕</button>
             
             <div class="mb-6">
-                <span class="text-swg-blue font-bold text-xs uppercase tracking-wider bg-blue-50 px-2 py-1 rounded">Provider Registration</span>
+                <span class="text-swg-blue font-bold text-xs uppercase tracking-wider bg-blue-50 px-2.5 py-1 rounded">Provider Registration</span>
                 <h3 class="text-2xl font-bold text-swg-dark mt-2">Partner with SWG Hub</h3>
-                <p class="text-slate-500 text-sm mt-1">Select your service type to register as a waste collector or authorized gas supplier.</p>
+                <p class="text-slate-500 text-sm mt-1">Select your service type to register as a waste collector or gas supplier in Buea.</p>
             </div>
             
             <form onsubmit="handleAgentApplication(event)" class="space-y-4">
-                
-                <!-- Provider Type Selector -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">I am applying as a:</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Applying as:</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="border-2 rounded-xl p-3 flex flex-col cursor-pointer border-swg-blue bg-blue-50/50 transition" id="typeWasteLabel" onclick="setProviderType('waste')">
                             <span class="font-bold text-sm text-slate-900">♻️ Waste Collector</span>
-                            <span class="text-xs text-slate-500 mt-1">Independent agent</span>
+                            <span class="text-[11px] text-slate-500 mt-0.5">Independent agent</span>
                         </label>
                         <label class="border-2 rounded-xl p-3 flex flex-col cursor-pointer border-slate-200 bg-white transition" id="typeGasLabel" onclick="setProviderType('gas')">
                             <span class="font-bold text-sm text-slate-900">🔥 Gas Supplier</span>
-                            <span class="text-xs text-slate-500 mt-1">Authorized depot/driver</span>
+                            <span class="text-[11px] text-slate-500 mt-0.5">Authorized depot</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Full Legal Name / Manager</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Full Legal Name</label>
                         <input type="text" required placeholder="e.g. Samuel Ndi" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Phone (MoMo/Orange)</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
                         <input type="tel" required placeholder="6XX XXX XXX" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">National ID Card Number</label>
-                    <input type="text" required placeholder="Enter ID number for verification" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue">
+                    <input type="text" required placeholder="Enter ID card number" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue">
                 </div>
 
-                <!-- Dynamic: Waste Collector Fields -->
                 <div id="wasteFields" class="space-y-4 block">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Available Transportation</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Vehicle / Transportation</label>
                         <select class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue bg-white">
-                            <option value="" disabled selected>Select your vehicle type</option>
-                            <option value="wheelbarrow">Wheelbarrow / Handcart</option>
                             <option value="tricycle">Tricycle (Kekeh)</option>
-                            <option value="pickup">Pickup Truck / Mini-Van</option>
-                            <option value="bike">Motorbike</option>
+                            <option value="wheelbarrow">Handcart / Wheelbarrow</option>
+                            <option value="pickup">Pickup Truck</option>
+                            <option value="motorbike">Motorbike</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Dynamic: Gas Supplier Fields -->
                 <div id="gasFields" class="space-y-4 hidden">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Registered Business / Depot Name</label>
-                        <input type="text" placeholder="e.g. Molyko Central Gas" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Upload Authorization/Safety Certificate</label>
-                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-3 text-center cursor-pointer hover:bg-slate-50 transition" onclick="document.getElementById('certInput').click()">
-                            <p class="text-xs font-semibold text-slate-600">📎 Attach Document</p>
-                            <input type="file" id="certInput" class="hidden">
-                        </div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Registered Gas Depot Name</label>
+                        <input type="text" placeholder="e.g. Molyko Central LPG Depot" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Operating Zone (Buea)</label>
                     <select required class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none text-sm focus:border-swg-blue bg-white">
-                        <option value="" disabled selected>Select neighborhood</option>
                         <option value="molyko">Molyko / UB Junction</option>
                         <option value="clerks">Clerks Quarters / Soppo</option>
                         <option value="buea_town">Buea Town</option>
-                        <option value="mile_16">Mile 16 / Bolifamba</option>
                         <option value="all">Anywhere in Buea</option>
                     </select>
                 </div>
@@ -468,31 +750,28 @@
                     <button type="submit" class="w-full bg-swg-blue text-white font-bold py-3.5 rounded-xl hover:bg-swg-blueDark transition shadow-lg shadow-blue-500/20">
                         Submit Application
                     </button>
-                    <p class="text-[11px] text-slate-400 text-center mt-3 leading-relaxed">
-                        By applying, you agree to our strict Zero Direct Cash Policy and safety standards. All earnings route securely via SWG Hub corporate accounts.
-                    </p>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Auth OTP Modal -->
+    <!-- Customer Phone Verification SMS Code Modal -->
     <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('authModal')"></div>
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full relative z-10 text-center">
             <h3 class="text-2xl font-bold text-swg-dark mb-2">Enter 4-Digit SMS Code</h3>
-            <p class="text-slate-600 text-sm mb-6">Sent to <span id="displayPhone" class="font-bold"></span></p>
+            <p class="text-slate-600 text-sm mb-6">Sent to <span id="displayPhone" class="font-bold text-swg-blue"></span></p>
             <div class="flex gap-3 justify-center mb-6">
                 <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold rounded-lg border-2 border-slate-200 focus:border-swg-blue outline-none">
                 <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold rounded-lg border-2 border-slate-200 focus:border-swg-blue outline-none">
                 <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold rounded-lg border-2 border-slate-200 focus:border-swg-blue outline-none">
                 <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold rounded-lg border-2 border-slate-200 focus:border-swg-blue outline-none">
             </div>
-            <button onclick="verifyOTP()" class="w-full bg-swg-blue text-white font-bold py-3 rounded-xl hover:bg-swg-blueDark transition">Verify & Proceed</button>
+            <button onclick="verifyOTP()" class="w-full bg-swg-blue text-white font-bold py-3 rounded-xl hover:bg-swg-blueDark transition">Verify Phone Number</button>
         </div>
     </div>
 
-    <!-- General Order Modal -->
+    <!-- Waste Order Modal -->
     <div id="orderModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('orderModal')"></div>
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full relative z-10 overflow-y-auto max-h-[90vh]">
@@ -502,20 +781,20 @@
             
             <form onsubmit="handleGeneralOrderSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Buea Delivery Address</label>
-                    <input type="text" required placeholder="e.g. Molyko, Hostel Block C" class="w-full px-4 py-2 rounded-lg border border-slate-200 outline-none">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Buea Delivery Address</label>
+                    <input type="text" required placeholder="e.g. Molyko, Block C, Room 12" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Select Payment Method</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Payment Method</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="border-2 rounded-xl p-3 flex flex-col cursor-pointer border-swg-blue bg-blue-50/50 transition" id="payNowLabel" onclick="setPaymentMode('now')">
-                            <span class="font-bold text-sm text-slate-900">⚡ Pay Online Now</span>
-                            <span class="text-xs text-slate-500 mt-1">Instant MoMo / Orange prompt</span>
+                            <span class="font-bold text-xs text-slate-900">⚡ Pay Online Now</span>
+                            <span class="text-[10px] text-slate-500 mt-1">Instant MoMo prompt</span>
                         </label>
                         <label class="border-2 rounded-xl p-3 flex flex-col cursor-pointer border-slate-200 bg-white transition" id="payDeliveryLabel" onclick="setPaymentMode('delivery')">
-                            <span class="font-bold text-sm text-slate-900">🚚 Pay on Arrival</span>
-                            <span class="text-xs text-slate-500 mt-1">Pay platform corporate account</span>
+                            <span class="font-bold text-xs text-slate-900">🚚 Pay on Arrival</span>
+                            <span class="text-[10px] text-slate-500 mt-1">To corporate merchant</span>
                         </label>
                     </div>
                 </div>
@@ -525,40 +804,39 @@
         </div>
     </div>
 
-    <!-- Gas Order Modal with Photo Upload -->
+    <!-- Gas Refill Modal -->
     <div id="gasModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('gasModal')"></div>
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full relative z-10 overflow-y-auto max-h-[95vh]">
             <button onclick="closeModal('gasModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">✕</button>
-            <h3 class="text-2xl font-bold text-swg-dark mb-2">Order Cooking Gas</h3>
-            <p class="text-slate-600 text-sm mb-4">Upload your cylinder photo so suppliers match the exact brand and color.</p>
+            <h3 class="text-2xl font-bold text-swg-dark mb-1">Order LPG Gas Refill</h3>
+            <p class="text-slate-600 text-xs mb-4">Upload a cylinder photo so our depot selects the exact brand match.</p>
             
             <form onsubmit="handleGasOrderSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Cylinder Brand (8,000 FCFA + 500 Delivery)</label>
-                    <select class="w-full px-4 py-2 rounded-lg border border-slate-200 outline-none bg-white">
-                        <option>Camgas (12.5kg Refill) - 8,500 FCFA Total</option>
-                        <option>SCTM (12.5kg Refill) - 8,500 FCFA Total</option>
-                        <option>Tradex (12.5kg Refill) - 8,500 FCFA Total</option>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Select Gas Brand (8,000 FCFA + 500 Delivery)</label>
+                    <select class="w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none bg-white text-sm">
+                        <option>Camgas (12.5kg Refill) - 8,500 FCFA</option>
+                        <option>SCTM (12.5kg Refill) - 8,500 FCFA</option>
+                        <option>Tradex (12.5kg Refill) - 8,500 FCFA</option>
                     </select>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Cylinder Photo (Required for Match)</label>
-                    <div id="uploadBox" class="border-2 border-dashed border-slate-300 rounded-xl p-5 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('cylinderPhotoInput').click()">
-                        <svg class="w-8 h-8 text-slate-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
-                        <p class="text-xs font-semibold text-slate-600" id="uploadPromptText">Click to snap or upload photo</p>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Cylinder Photo (Required for Match)</label>
+                    <div id="uploadBox" class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('cylinderPhotoInput').click()">
+                        <p class="text-xs font-semibold text-slate-600" id="uploadPromptText">📷 Click to snap or upload cylinder photo</p>
                         <input type="file" id="cylinderPhotoInput" accept="image/*" class="hidden" onchange="handleCylinderPhotoSelect(event)">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Delivery Address</label>
-                    <input type="text" required placeholder="e.g. Molyko, Hostel Block C" class="w-full px-4 py-2 rounded-lg border border-slate-200 outline-none">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Delivery Address</label>
+                    <input type="text" required placeholder="e.g. Clerks Quarters, House 4" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Payment Method</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Payment Option</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="border-2 rounded-xl p-3 flex flex-col cursor-pointer border-swg-blue bg-blue-50/50 transition" id="gasPayNowLabel" onclick="setGasPaymentMode('now')">
                             <span class="font-bold text-xs text-slate-900">⚡ Pay Online Now</span>
@@ -579,61 +857,97 @@
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('withdrawModal')"></div>
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full relative z-10">
             <button onclick="closeModal('withdrawModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">✕</button>
-            <h3 class="text-2xl font-bold text-swg-dark mb-2">Cash-Out Request</h3>
-            <p class="text-slate-600 text-sm mb-6">Input your MoMo / Orange Money account number and name.</p>
+            <h3 class="text-2xl font-bold text-swg-dark mb-1">Cash-Out Escrow Funds</h3>
+            <p class="text-slate-600 text-xs mb-6">Enter Mobile Money details to receive your earnings payout.</p>
             
             <form onsubmit="handleWithdrawSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Account Number</label>
-                    <input type="tel" required placeholder="e.g. 676508320" class="w-full px-4 py-2 rounded-lg border border-slate-200 outline-none">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">MoMo / Orange Account Number</label>
+                    <input type="tel" required placeholder="e.g. 676508320" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Account Holder Name</label>
-                    <input type="text" required placeholder="e.g. John Ndikum" class="w-full px-4 py-2 rounded-lg border border-slate-200 outline-none">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Registered Account Holder Name</label>
+                    <input type="text" required placeholder="e.g. John Ndikum" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none">
                 </div>
                 <button type="submit" class="w-full bg-swg-green text-white font-bold py-3 rounded-xl hover:bg-swg-greenDark transition mt-2">Submit Withdrawal Request</button>
             </form>
         </div>
     </div>
 
-    <!-- General Message Box Modal (Replaces Alerts) -->
+    <!-- General Message Modal (Custom Replacement for Browser Alerts) -->
     <div id="msgModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('msgModal')"></div>
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full relative z-10 text-center">
-            <h3 class="text-xl font-bold text-swg-dark mb-2" id="msgTitle">Notice</h3>
-            <p class="text-slate-600 mb-6 text-sm" id="msgBody">Message</p>
-            <button onclick="closeModal('msgModal')" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-900 transition">Understood</button>
+            <h3 class="text-xl font-bold text-slate-900 mb-2" id="msgTitle">Notice</h3>
+            <p class="text-slate-600 mb-6 text-sm leading-relaxed" id="msgBody">Message content</p>
+            <button onclick="closeModal('msgModal')" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">Understood</button>
         </div>
     </div>
 
     <script>
+        // Security Codes Configuration
+        const AGENT_CODE = "AGENT123";
+        const ADMIN_CODE = "ADMIN999";
+
         let currentPaymentMode = 'now'; 
         let currentGasPaymentMode = 'now';
         let currentProviderType = 'waste';
 
-        // Role Switching Logic
-        function switchPortal(role) {
+        // Portal Switcher Logic
+        function hideAllPortals() {
+            document.getElementById('portalGatewayView').classList.add('hidden');
             document.querySelectorAll('.portal-view').forEach(p => p.classList.add('hidden'));
-            
-            const btnCust = document.getElementById('navCustomerBtn');
-            const btnAgent = document.getElementById('navAgentBtn');
-            const btnAdmin = document.getElementById('navAdminBtn');
+            document.getElementById('changePortalBtn').classList.remove('hidden');
+        }
 
-            btnCust.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition text-slate-600 hover:text-slate-900 bg-transparent';
-            btnAgent.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition text-slate-600 hover:text-slate-900 bg-transparent';
-            btnAdmin.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition text-slate-600 hover:text-slate-900 bg-transparent';
-
-            if (role === 'customer') {
-                document.getElementById('customerPortal').classList.remove('hidden');
-                btnCust.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition bg-white text-swg-blue shadow-sm';
-            } else if (role === 'agent') {
-                document.getElementById('agentPortal').classList.remove('hidden');
-                btnAgent.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition bg-white text-emerald-600 shadow-sm';
-            } else if (role === 'admin') {
-                document.getElementById('adminPortal').classList.remove('hidden');
-                btnAdmin.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition bg-white text-red-600 shadow-sm';
-            }
+        function showPortalGateway() {
+            document.querySelectorAll('.portal-view').forEach(p => p.classList.add('hidden'));
+            document.getElementById('portalGatewayView').classList.remove('hidden');
+            document.getElementById('changePortalBtn').classList.add('hidden');
             window.scrollTo(0,0);
+        }
+
+        function openGeneralPortal() {
+            hideAllPortals();
+            document.getElementById('customerPortal').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        // Code Gated Portal Access Prompts
+        function promptAgentAccess() {
+            openModal('agentAuthModal');
+        }
+
+        function promptAdminAccess() {
+            openModal('adminAuthModal');
+        }
+
+        function verifyAgentCode(e) {
+            e.preventDefault();
+            const input = document.getElementById('agentCodeInput').value.trim();
+            if (input === AGENT_CODE) {
+                closeModal('agentAuthModal');
+                hideAllPortals();
+                document.getElementById('agentPortal').classList.remove('hidden');
+                document.getElementById('agentCodeInput').value = '';
+                window.scrollTo(0,0);
+            } else {
+                showMessage("Access Denied", "Invalid Agent Code. Please check your approval code.");
+            }
+        }
+
+        function verifyAdminCode(e) {
+            e.preventDefault();
+            const input = document.getElementById('adminCodeInput').value.trim();
+            if (input === ADMIN_CODE) {
+                closeModal('adminAuthModal');
+                hideAllPortals();
+                document.getElementById('adminPortal').classList.remove('hidden');
+                document.getElementById('adminCodeInput').value = '';
+                window.scrollTo(0,0);
+            } else {
+                showMessage("Access Denied", "Invalid Admin Security Code.");
+            }
         }
 
         // Toggles between Waste and Gas sections in Customer portal
@@ -644,32 +958,15 @@
             const sG = document.getElementById('gasSection');
 
             if (type === 'waste') {
-                btnW.className = 'w-full sm:w-44 py-3 rounded-lg font-bold transition text-white bg-swg-green shadow-md';
-                btnG.className = 'w-full sm:w-44 py-3 rounded-lg font-bold transition text-slate-600 bg-transparent';
+                btnW.className = 'w-full sm:w-48 py-3 rounded-xl font-bold transition text-white bg-swg-green shadow-md';
+                btnG.className = 'w-full sm:w-48 py-3 rounded-xl font-bold transition text-slate-600 bg-transparent';
                 sW.classList.remove('hidden');
                 sG.classList.add('hidden');
             } else {
-                btnG.className = 'w-full sm:w-44 py-3 rounded-lg font-bold transition text-white bg-swg-blue shadow-md';
-                btnW.className = 'w-full sm:w-44 py-3 rounded-lg font-bold transition text-slate-600 bg-transparent';
+                btnG.className = 'w-full sm:w-48 py-3 rounded-xl font-bold transition text-white bg-swg-blue shadow-md';
+                btnW.className = 'w-full sm:w-48 py-3 rounded-xl font-bold transition text-slate-600 bg-transparent';
                 sG.classList.remove('hidden');
                 sW.classList.add('hidden');
-            }
-        }
-
-        function handleCylinderPhotoSelect(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const box = document.getElementById('uploadBox');
-                box.style.borderColor = '#10B981';
-                box.style.background = '#ECFDF5';
-                document.getElementById('uploadPromptText').innerText = `✅ Attached: ${file.name}`;
-            }
-        }
-
-        function handlePodUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                document.getElementById('podStatusText').innerText = `✅ PoD Verified & Saved: ${file.name}`;
             }
         }
 
@@ -703,7 +1000,7 @@
             } else {
                 delLbl.className = 'border-2 rounded-xl p-3 flex flex-col cursor-pointer border-swg-blue bg-blue-50/50 transition';
                 nowLbl.className = 'border-2 rounded-xl p-3 flex flex-col cursor-pointer border-slate-200 bg-white transition';
-                submitBtn.innerText = 'Confirm Gas Pay on Arrival (Corporate MoMo)';
+                submitBtn.innerText = 'Confirm Pay on Arrival (Corporate MoMo)';
             }
         }
 
@@ -718,19 +1015,16 @@
                 wasteLbl.className = 'border-2 rounded-xl p-3 flex flex-col cursor-pointer border-swg-blue bg-blue-50/50 transition';
                 gasLbl.className = 'border-2 rounded-xl p-3 flex flex-col cursor-pointer border-slate-200 bg-white transition';
                 wasteFields.classList.remove('hidden');
-                wasteFields.classList.add('block');
                 gasFields.classList.add('hidden');
-                gasFields.classList.remove('block');
             } else {
                 gasLbl.className = 'border-2 rounded-xl p-3 flex flex-col cursor-pointer border-swg-blue bg-blue-50/50 transition';
                 wasteLbl.className = 'border-2 rounded-xl p-3 flex flex-col cursor-pointer border-slate-200 bg-white transition';
                 gasFields.classList.remove('hidden');
-                gasFields.classList.add('block');
                 wasteFields.classList.add('hidden');
-                wasteFields.classList.remove('block');
             }
         }
 
+        // Modal Helpers
         function showMessage(title, body) {
             document.getElementById('msgTitle').innerText = title;
             document.getElementById('msgBody').innerText = body;
@@ -740,11 +1034,12 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+        // Form Handlers
         function handleAuthSubmit(e) {
             e.preventDefault();
             const phone = document.getElementById('phoneInput').value;
             if(phone.length < 9) {
-                showMessage("Invalid Number", "Please enter a valid 9-digit Cameroonian phone number.");
+                showMessage("Invalid Number", "Please enter a valid 9-digit phone number.");
                 return;
             }
             document.getElementById('displayPhone').innerText = "+237 " + phone;
@@ -753,7 +1048,7 @@
 
         function verifyOTP() {
             closeModal('authModal');
-            showMessage("Verified!", "Phone number successfully verified. You can now select your service package.");
+            showMessage("Phone Verified!", "Your number is verified. You can now place service orders.");
         }
 
         function openOrderModal(planName, price) {
@@ -765,63 +1060,90 @@
         function openGasModal() { openModal('gasModal'); }
         function openWithdrawModal() { openModal('withdrawModal'); }
 
-        // Handle the newly added Agent Application Submit
+        function handleCylinderPhotoSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const box = document.getElementById('uploadBox');
+                box.style.borderColor = '#10B981';
+                box.style.background = '#ECFDF5';
+                document.getElementById('uploadPromptText').innerText = `✅ Photo Attached: ${file.name}`;
+            }
+        }
+
+        function handlePodUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('podStatusText').innerText = `✅ Delivery Photo Uploaded: ${file.name}`;
+            }
+        }
+
         function handleAgentApplication(e) {
             e.preventDefault();
             closeModal('enrollmentModal');
-            let msg = currentProviderType === 'waste' 
-                ? "Thank you for applying as a Waste Collector. Our operations team will review your ID and transport details."
-                : "Thank you for applying as a Gas Supplier. Our safety & compliance team will carefully review your authorization documents. We will contact you shortly!";
-            showMessage("Application Received!", msg);
+            showMessage("Application Submitted!", "Your application has been logged into the Administrator Queue for review. Upon approval, you will receive your unique Agent Access Code via SMS.");
         }
 
         function handleGeneralOrderSubmit(e) {
             e.preventDefault();
             closeModal('orderModal');
             if (currentPaymentMode === 'now') {
-                showMessage("Online Payment Initiated", "MoMo / Orange Money payment prompt triggered successfully. Hotline: +237 676508320.");
+                showMessage("Online Payment Initiated", "Mobile Money payment prompt dispatched. Hotline for assistance: +237 676508320.");
             } else {
-                showMessage("Pay on Arrival Confirmed", "Order placed successfully. Upon agent arrival, you will pay directly to SWG Hub's corporate merchant account (Zero cash to agent).");
+                showMessage("Pay on Arrival Registered", "Your order is assigned to a local agent. Payment must be cleared directly to SWG Hub corporate merchant upon arrival.");
             }
         }
 
         function handleGasOrderSubmit(e) {
             e.preventDefault();
             closeModal('gasModal');
-            if (currentGasPaymentMode === 'now') {
-                showMessage("Gas Order Successful", "Cylinder photo matched and MoMo payment prompt triggered successfully for 8,500 FCFA.");
-            } else {
-                showMessage("Gas Pay on Arrival Confirmed", "Cylinder photo matched successfully. Payment will be cleared on arrival directly to SWG Hub corporate merchant account.");
-            }
+            showMessage("LPG Gas Refill Ordered", "Cylinder photo matched! Order dispatched to depot.");
         }
 
         function handleWithdrawSubmit(e) {
             e.preventDefault();
             closeModal('withdrawModal');
-            showMessage("Withdrawal Queued", "Your cash-out request with account details has been sent to the admin queue. Funds will arrive via MoMo shortly.");
+            showMessage("Withdrawal Queued", "Cash-out request sent to administrator queue. Disbursal will process via Mobile Money shortly.");
         }
 
+        function handleDeliveryValidation(e) {
+            e.preventDefault();
+            const phone = document.getElementById('valPhone').value;
+            showMessage("Delivery Validated!", `Thank you. Service receipt for ${phone} has been confirmed. Escrow funds released to agent.`);
+        }
+
+        function handleComplaintSubmit(e) {
+            e.preventDefault();
+            showMessage("Complaint Received", "Your issue has been logged into the Admin Operations desk. An officer will follow up with you within 2 hours.");
+        }
+
+        // Admin Action Handlers
         function clearAdminWithdrawal(btn) {
-            btn.innerText = "✓ Cleared & Disbursed";
-            btn.className = "w-full bg-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg cursor-not-allowed mt-2";
+            btn.innerText = "✓ Disbursed & Cleared";
+            btn.className = "w-full bg-slate-300 text-slate-700 text-xs font-bold py-2.5 rounded-lg cursor-not-allowed";
             btn.disabled = true;
-            document.getElementById('pendingQueueCount').innerText = "0 Requests";
-            showMessage("Ledger Cleared", "The payout has been successfully cleared and matched against corporate accounts.");
+            document.getElementById('pendingQueueCount').innerText = "0 Pending";
+            showMessage("Withdrawal Cleared", "Funds disbursed to agent via Mobile Money corporate account.");
         }
 
-        // NEW: Handle approving an agent from the Admin dashboard
         function approveAgent(btn, appId) {
             const appDiv = document.getElementById(appId);
-            appDiv.classList.add('opacity-50', 'pointer-events-none');
-            btn.innerText = "✓ Agent Approved";
-            btn.className = "w-full bg-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg cursor-not-allowed mt-2";
-            
-            // Wait a moment then remove it to simulate real processing
+            btn.innerText = "✓ Approved (Code: AGENT" + Math.floor(100 + Math.random() * 900) + ")";
+            btn.className = "w-full bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-lg cursor-not-allowed";
+            btn.disabled = true;
             setTimeout(() => {
                 appDiv.style.display = 'none';
                 document.getElementById('emptyAppsText').classList.remove('hidden');
-                showMessage("Agent Activated", "Sarah Ebot has been approved and added to the Clerks Quarters provider pool.");
-            }, 1000);
+                showMessage("Agent Approved", "Sarah Ebot approved and generated with a unique agent entry code!");
+            }, 1200);
+        }
+
+        function resolveComplaint(btn) {
+            const card = btn.closest('div');
+            card.classList.add('opacity-40');
+            btn.innerText = "✓ Resolved";
+            btn.disabled = true;
+            document.getElementById('adminComplaintCount').innerText = "0 Open";
+            showMessage("Complaint Closed", "Issue marked as resolved in the platform log.");
         }
     </script>
 </body>
